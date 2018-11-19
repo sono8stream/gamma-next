@@ -1,0 +1,22 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "accounts": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "blogs": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "notifications": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "update": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
