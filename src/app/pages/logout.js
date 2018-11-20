@@ -26,7 +26,7 @@ export default class Logout extends React.Component {
 
   render() {
     return (
-      <ThemeProvider>
+      <div>
         <Header text='GAMMA Login' />
         <Grid container justify='center'>
           <Grid item>
