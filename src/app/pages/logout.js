@@ -8,7 +8,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import ThemeProvider from '../style/theme';
 
 export default class Logout extends React.Component {
   constructor(props) {
@@ -47,7 +46,7 @@ export default class Logout extends React.Component {
           </Grid>
         </Grid>
         <Footer />
-      </ThemeProvider>
+      </div>
     )
   }
 }

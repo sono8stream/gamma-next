@@ -21,7 +21,6 @@ import Divider from '@material-ui/core/Divider';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import ThemeProvider from '../style/theme';
 
 const blogRef = firebaseDB.ref('blogs');
 const processor = remark().use(reactRenderer);
@@ -190,7 +189,7 @@ export default class ArticleEdit extends Component {
     }
 
     return (
-      <ThemeProvider>
+      <div>
         <Header text='GAMMA Blog' />
         <Grid container spacing={16}>
           <Grid item>
@@ -305,7 +304,8 @@ export default class ArticleEdit extends Component {
           </DialogActions>
         </Dialog>
         <Footer />
-      </ThemeProvider>
+      </div>
     );
   }
 }
+

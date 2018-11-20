@@ -15,7 +15,6 @@ import Divider from '@material-ui/core/Divider';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import ThemeProvider from '../style/theme';
 
 const blogRef = firebaseDB.ref('blogs');
 
@@ -86,7 +85,7 @@ export default class Blog extends Component {
     }
     else {
       return (
-        <ThemeProvider>
+        <div>
           <Header text="GAMMA Blog" />
 
           <Grid container spacing={16}>
@@ -135,7 +134,7 @@ export default class Blog extends Component {
             )}
           </Grid>
           <Footer />
-        </ThemeProvider>
+        </div>
       );
     }
   }
