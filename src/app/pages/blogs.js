@@ -1,5 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { firebaseAuth, firebaseDB } from '../firebase';
+import { Link } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -14,6 +15,7 @@ import Divider from '@material-ui/core/Divider';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ThemeProvider from '../style/theme';
 
 const blogRef = firebaseDB.ref('blogs');
 
@@ -74,22 +76,17 @@ export default class Blog extends Component {
     });
   }
 
-  createArticle() {
-    let key = blogRef.push().key;
-    this.props.history.push(`/blogs/edit/${key}`);
-  }
-
-  showArticle(id) {
-    this.props.history.push(`/blogs/show/${id}`);
-  }
-
   render() {
     if (!this.state.loadCompleted) {
-      return <Header text="GAMMA Blog" onLoad />;
+      return (
+        //<ThemeProvider>
+          <Header text="GAMMA Blog" onLoad />
+        //</ThemeProvider>
+      );
     }
     else {
       return (
-        <div>
+        <ThemeProvider>
           <Header text="GAMMA Blog" />
 
           <Grid container spacing={16}>
@@ -97,10 +94,11 @@ export default class Blog extends Component {
               if (this.state.uid) {
                 return (
                   <Grid item>
-                    <Button color='secondary' variant='outlined'
-                      onClick={() => this.createArticle()} >
-                      新しく書く
+                    <Link route='blogEdit' params={{ id: 'new' }}>
+                      <Button color='secondary' variant='outlined'>
+                        新しく書く
                     </Button>
+                    </Link>
                   </Grid>
                 );
               }
@@ -112,7 +110,8 @@ export default class Blog extends Component {
                 return (
                   <Grid item xs={12} key={i}>
                     <Card>
-                      <CardActionArea onClick={() => this.showArticle(a.id)}>
+                      <Link route='blogShow' params={{ id: a.id }}>
+                      <CardActionArea>
                         <CardContent>
                           <Typography color="textSecondary" gutterBottom>
                             {`${a.date}   by ${a.authorName}`}
@@ -122,11 +121,12 @@ export default class Blog extends Component {
                           </Typography>
                           <Divider light />
                           <br />
-                          <Typography component="p">
+                          <Typography variant="body1">
                             {a.preview}
                           </Typography>
                         </CardContent>
-                      </CardActionArea>
+                        </CardActionArea>
+                        </Link>
                     </Card>
                   </Grid>
                 );
@@ -135,7 +135,7 @@ export default class Blog extends Component {
             )}
           </Grid>
           <Footer />
-        </div>
+        </ThemeProvider>
       );
     }
   }

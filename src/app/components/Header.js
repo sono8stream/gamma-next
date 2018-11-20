@@ -7,17 +7,7 @@ import { withStyles, WithStyles } from '@material-ui/core/styles';
 
 import colors from '../style/themeColor';
 
-const styles = theme => ({
-  colorPrimary: {
-    backgroundColor: colors.secondaryLight,
-  },
-  barColorPrimary: {
-    backgroundColor: colors.secondary,
-  },
-});
-
 function Header(props) {
-  let { classes } = props;
 
   return (
     <div>
@@ -38,13 +28,7 @@ function Header(props) {
         </div>
         {(() => {
           if (props.onLoad) {
-            return (
-              <LinearProgress
-                classes={{
-                  colorPrimary: classes.colorPrimary,
-                  barColorPrimary: classes.barColorPrimary,
-                }}
-              />);
+            return (<LinearProgress color='secondary' />);
           }
         })()}
       </AppBar>
@@ -53,4 +37,4 @@ function Header(props) {
   );
 }
 
-export default withStyles(styles)(Header);
+export default Header;
