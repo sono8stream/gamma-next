@@ -2,6 +2,7 @@
 import {firebaseAuth, firebaseDB} from '../firebase';
 import remark from 'remark';
 import reactRenderer from 'remark-react';
+import { withRouter } from 'next/router';
 import { Link,Router } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
@@ -18,7 +19,7 @@ import Footer from '../components/Footer';
 const blogRef = firebaseDB.ref('blogs');
 const processor=remark().use(reactRenderer);
 
-export default class BlogShow extends Component {
+class BlogShow extends Component {
   constructor(props) {
     super(props);
 
@@ -34,9 +35,8 @@ export default class BlogShow extends Component {
     };
   }
 
-  componentWillMount() {
-
-    let ref = blogRef.child(this.props.url.query.id);
+  componentDidMount() {
+    let ref = blogRef.child(this.props.router.query.id);
     ref.on('value', snapshot => {
       let val = snapshot.val();
       if (!val) {
@@ -95,7 +95,7 @@ export default class BlogShow extends Component {
         <Header text='GAMMA Blog' />
         <Grid container spacing={16}>
           <Grid item>
-            <Link route='blogs'>
+            <Link route='/blogs'>
               <Button variant='outlined'>
                 一覧に戻る
             </Button>
@@ -105,7 +105,8 @@ export default class BlogShow extends Component {
             if (this.state.viewerUid === this.state.author) {
               return (
                 <Grid item>
-                  <Link route='blogEdit' params={{ id: this.props.url.query.id }}>
+                  <Link route='blogEdit'
+                    params={{ id: this.props.router.query.id }}>
                   <Button variant='outlined' color='primary'>
                     編集する
             </Button>
@@ -140,7 +141,7 @@ export default class BlogShow extends Component {
             </Card>
           </Grid>
           <Grid item xs={6}>
-            <Link route='blogs'>
+            <Link route='/blogs'>
               <Button variant='outlined'>
                 一覧に戻る
             </Button>
@@ -152,3 +153,5 @@ export default class BlogShow extends Component {
     );
   }
 }
+
+export default withRouter(BlogShow);

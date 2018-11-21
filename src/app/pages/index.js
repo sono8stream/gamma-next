@@ -3,7 +3,7 @@ import { Router } from '../../functions/routes';
 
 export default class Home extends React.Component {
 
-  componentWillMount() {
+  componentDidMount() {
     Router.pushRoute('/blogs');
   }
 

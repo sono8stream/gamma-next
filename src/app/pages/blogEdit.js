@@ -2,6 +2,7 @@
 import { firebaseAuth, firebaseDB} from '../firebase';
 import remark from 'remark';
 import reactRenderer from 'remark-react';
+import { withRouter } from 'next/router';
 import { Link,Router } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
@@ -26,7 +27,7 @@ const blogRef = firebaseDB.ref('blogs');
 const processor = remark().use(reactRenderer);
 const previewChars = 25;
 
-export default class ArticleEdit extends Component {
+class BlogEdit extends Component {
   constructor(props) {
     super(props);
 
@@ -49,7 +50,7 @@ export default class ArticleEdit extends Component {
       onPreview: false,
     }
 
-    this.ref = blogRef.child(this.props.url.query.id);
+    this.ref = blogRef.child(this.props.router.query.id);
     if (this.ref === 'new') {
       this.ref = blogRef.push().key;
     }
@@ -193,7 +194,7 @@ export default class ArticleEdit extends Component {
         <Header text='GAMMA Blog' />
         <Grid container spacing={16}>
           <Grid item>
-            <Link route='blogShow' params={{ id: this.props.url.query.id }}>
+            <Link route='blogShow' params={{ id: this.props.router.query.id }}>
             <Button color='primary' variant='outlined'>
               編集をキャンセル
             </Button>
@@ -309,3 +310,4 @@ export default class ArticleEdit extends Component {
   }
 }
 
+export default withRouter(BlogEdit);
