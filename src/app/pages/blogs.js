@@ -78,15 +78,13 @@ export default class Blog extends Component {
   render() {
     if (!this.state.loadCompleted) {
       return (
-        //<ThemeProvider>
-          <Header text="GAMMA Blog" onLoad />
-        //</ThemeProvider>
+          <Header text="KawazST Blog" onLoad />
       );
     }
     else {
       return (
         <div>
-          <Header text="GAMMA Blog" />
+          <Header text="KawazST Blog" />
 
           <Grid container spacing={16}>
             {(() => {

@@ -152,8 +152,16 @@ class BlogEdit extends Component {
         if (e) {
           this.setState({ error: '保存に失敗しました' });
         }
-          else {
-          Router.pushRoute('/blogs');
+        else {
+          firebaseDB.ref(`/notifications/blogs/${this.props.router.query.id}`)
+            .set({
+              url:`https://gamma-creators.firebaseapp.com/blogs/${this.props.router.query.id}`
+              accessibility:this.state.accessibility
+            }).then(() => {
+              firebaseDB.ref('update').set(true).then(() => {
+                Router.pushRoute('/blogs');
+              });
+            });
         }
       });
     }
@@ -186,12 +194,12 @@ class BlogEdit extends Component {
 
   render() {
     if (this.state.onLoad) {
-      return <Header text='GAMMA Blog' onLoad />
+      return <Header text='KawazST Blog' onLoad />
     }
 
     return (
       <div>
-        <Header text='GAMMA Blog' />
+        <Header text='KawazST Blog' />
         <Grid container spacing={16}>
           <Grid item>
             <Link route='blogShow' params={{ id: this.props.router.query.id }}>

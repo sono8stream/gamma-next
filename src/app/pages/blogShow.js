@@ -2,6 +2,7 @@
 import {firebaseAuth, firebaseDB} from '../firebase';
 import remark from 'remark';
 import reactRenderer from 'remark-react';
+import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { Link,Router } from '../../functions/routes';
 
@@ -23,14 +24,20 @@ class BlogShow extends Component {
   constructor(props) {
     super(props);
 
+    if (!props.val) {
+      this.returnIndex();
+      return;
+    }
+
+    console.log("constructor");
     this.state = {
-      author: '',
+      author: props.val.author,
       authorName: '',
-      date: '',
-      title: '',
+      date: props.val.date,
+      title: props.val.title,
       categories: ['未分類'],
-      text: '',
-      error: '',
+      text: props.val.text,
+      error: props.val.error,
       viewerUid: undefined,
     };
   }
@@ -58,7 +65,6 @@ class BlogShow extends Component {
         text: val.text,
       });
 
-      console.log(val.author);
       let authorNameRef = firebaseDB.ref(`accounts/${val.author}`);
       authorNameRef.once('value', account => {
         let accountVal = account.val();
@@ -84,15 +90,19 @@ class BlogShow extends Component {
 
     if (!this.state.title) {
       return (
-        //<ThemeProvider>
-        <Header text="GAMMA Blog" onLoad />
-        //</ThemeProvider>
+        <Header text="KawazST Blog" onLoad />
       );
     }
 
     return (
       <div>
-        <Header text='GAMMA Blog' />
+        <Head>
+          <meta property="og:title" content={this.props.val.title} />
+          <meta property="og:description" content={this.props.val.preview} />
+          <meta property="og:type" content='blog' />
+          <meta property="og:site_name" content='KawazST Blog' />
+        </Head>
+        <Header text='KawazST Blog' />
         <Grid container spacing={16}>
           <Grid item>
             <Link route='/blogs'>
@@ -107,10 +117,10 @@ class BlogShow extends Component {
                 <Grid item>
                   <Link route='blogEdit'
                     params={{ id: this.props.router.query.id }}>
-                  <Button variant='outlined' color='primary'>
-                    編集する
+                    <Button variant='outlined' color='primary'>
+                      編集する
             </Button>
-                    </Link>
+                  </Link>
                 </Grid>
               );
             }
@@ -152,6 +162,12 @@ class BlogShow extends Component {
       </div>
     );
   }
+}
+
+BlogShow.getInitialProps = async ({ query }) => {
+  let snapshot = await blogRef.child(query.id).once('value');
+  console.log(snapshot.val());
+  return { val: snapshot.val() }
 }
 
 export default withRouter(BlogShow);
