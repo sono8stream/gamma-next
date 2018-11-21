@@ -43,16 +43,17 @@ class BlogEdit extends Component {
       accessibility: this.accessibility[1],
       author: '',
       date: '',
+      time: '',
       title: '',
       text: '',
-      preview:'',
+      preview: '',
       error: '',
       onPreview: false,
     }
 
     this.ref = blogRef.child(this.props.router.query.id);
-    if (this.ref === 'new') {
-      this.ref = blogRef.push().key;
+    if (this.props.router.query.id === 'new') {
+      this.ref = blogRef.child(blogRef.push().key);
     }
   }
 
@@ -76,6 +77,7 @@ class BlogEdit extends Component {
           accessibility: val.accessibility,
           author: val.author,
           date: val.date,
+          time: val.time,
           title: val.title,
           text: val.text,
           preview: val.preview,

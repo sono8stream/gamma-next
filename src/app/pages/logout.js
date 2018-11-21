@@ -27,7 +27,7 @@ export default class Logout extends React.Component {
   render() {
     return (
       <div>
-        <Header text='KawazST Login' />
+        <Header text='KawazST Logout' />
         <Grid container justify='center'>
           <Grid item>
             {(() => {

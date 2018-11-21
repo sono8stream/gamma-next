@@ -24,20 +24,15 @@ class BlogShow extends Component {
   constructor(props) {
     super(props);
 
-    if (!props.val) {
-      this.returnIndex();
-      return;
-    }
-
     console.log("constructor");
     this.state = {
-      author: props.val.author,
+      author: '',
       authorName: '',
-      date: props.val.date,
-      title: props.val.title,
+      date: '',
+      title: '',
       categories: ['未分類'],
-      text: props.val.text,
-      error: props.val.error,
+      text: '',
+      error: '',
       viewerUid: undefined,
     };
   }
@@ -88,77 +83,88 @@ class BlogShow extends Component {
 
   render() {
 
-    if (!this.state.title) {
-      return (
-        <Header text="KawazST Blog" onLoad />
-      );
-    }
-
     return (
       <div>
-        <Head>
-          <meta property="og:title" content={this.props.val.title} />
-          <meta property="og:description" content={this.props.val.preview} />
-          <meta property="og:type" content='blog' />
-          <meta property="og:site_name" content='KawazST Blog' />
-        </Head>
-        <Header text='KawazST Blog' />
-        <Grid container spacing={16}>
-          <Grid item>
-            <Link route='/blogs'>
-              <Button variant='outlined'>
-                一覧に戻る
+        {(() => {
+          if (this.props.val) {
+            return (
+              <Head>
+                <meta property="og:title" content={this.props.val.title} />
+                <meta property="og:description" content={this.props.val.preview} />
+                <meta property="og:type" content='article' />
+                <meta property="og:site_name" content='KawazST Blog' />
+              </Head>
+            );
+          }
+        })()}
+        {(() => {
+          if (!this.state.title) {
+            return <Header text="KawazST Blog" onLoad />;
+          }
+          else {
+            return (
+              <div>
+                <Header text='KawazST Blog' />
+                <Grid container spacing={16}>
+                  <Grid item>
+                    <Link route='/blogs'>
+                      <Button variant='outlined'>
+                        一覧に戻る
             </Button>
-            </Link>
-          </Grid>
-          {(() => {
-            if (this.state.viewerUid === this.state.author) {
-              return (
-                <Grid item>
-                  <Link route='blogEdit'
-                    params={{ id: this.props.router.query.id }}>
-                    <Button variant='outlined' color='primary'>
-                      編集する
+                    </Link>
+                  </Grid>
+                  {(() => {
+                    if (this.state.viewerUid === this.state.author) {
+                      return (
+                        <Grid item>
+                          <Link route='blogEdit'
+                            params={{ id: this.props.router.query.id }}>
+                            <Button variant='outlined' color='primary'>
+                              編集する
             </Button>
-                  </Link>
+                          </Link>
+                        </Grid>
+                      );
+                    }
+                  })()}
+                  <Grid item xs={12}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant='h6' gutterBottom>
+                          {this.state.title}
+                        </Typography>
+                        <Typography variant='subtitle2' gutterBottom>
+                          {`${this.state.date}   by ${this.state.authorName}`}
+                        </Typography>
+                        {this.state.categories.map((category) => (
+                          <Chip
+                            label={category}
+                            clickable
+                            variant='outlined'
+                          />
+                        ))}
+                        <br />
+                        <br />
+                        <Divider light />
+                        <Typography variant='body2'>
+                          {processor.processSync(this.state.text).contents}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Link route='/blogs'>
+                      <Button variant='outlined'>
+                        一覧に戻る
+            </Button>
+                    </Link>
+                  </Grid>
                 </Grid>
-              );
-            }
-          })()}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant='h6' gutterBottom>
-                  {this.state.title}
-                </Typography>
-                <Typography variant='subtitle2' gutterBottom>
-                  {`${this.state.date}   by ${this.state.authorName}`}
-                </Typography>
-                {this.state.categories.map((category) => (
-                  <Chip
-                    label={category}
-                    clickable
-                    variant='outlined'
-                  />
-                ))}
-                <br />
-                <br />
-                <Divider light />
-                <Typography variant='body2'>
-                  {processor.processSync(this.state.text).contents}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={6}>
-            <Link route='/blogs'>
-              <Button variant='outlined'>
-                一覧に戻る
-            </Button>
-            </Link>
-          </Grid>
-        </Grid>
-        <Footer />
+                <Footer />
+              </div>
+            );
+          }
+        })()}
       </div>
     );
   }

@@ -25,7 +25,13 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>My page</title>
+          <title>KawazST Blog</title>
+          <meta name="twitter:card" content="summary" />
+          <meta name="twitter:site" content="@kawaz_student" />
+          <meta property="og:site_name" content='KawazST Blog' />
+          <meta property="og:title" content='KawazST Blog' />
+          <meta property="og:image" content='https://gamma-creators.firebaseapp.com/icon.png' />
+          <meta property="og:description" content='Kawaz学生部の公式ブログです.' />
         </Head>
         {/* Wrap every page in Jss and Theme providers */}
         <JssProvider
