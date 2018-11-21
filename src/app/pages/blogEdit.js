@@ -153,15 +153,7 @@ class BlogEdit extends Component {
           this.setState({ error: '保存に失敗しました' });
         }
         else {
-          firebaseDB.ref(`/notifications/blogs/${this.props.router.query.id}`)
-            .set({
-              url:`https://gamma-creators.firebaseapp.com/blogs/${this.props.router.query.id}`
-              accessibility:this.state.accessibility
-            }).then(() => {
-              firebaseDB.ref('update').set(true).then(() => {
-                Router.pushRoute('/blogs');
-              });
-            });
+          Router.pushRoute('/blogs');
         }
       });
     }
