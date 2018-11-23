@@ -172,7 +172,6 @@ class BlogShow extends Component {
 
 BlogShow.getInitialProps = async ({ query }) => {
   let snapshot = await blogRef.child(query.id).once('value');
-  console.log(snapshot.val());
   return { val: snapshot.val() }
 }
 
