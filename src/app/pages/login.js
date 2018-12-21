@@ -45,10 +45,13 @@ export default class Login extends React.Component {
           request.responseType = 'json';
           request.addEventListener("load", (event) => {
             if (event.target.status === 200) {
+              /*
               let name = event.target.response.name;
               if (!name) {
                 name = event.target.response.login;
               }
+              */
+              let name = event.target.response.login;
 
               ref.update({
                 email: result.user.email,
