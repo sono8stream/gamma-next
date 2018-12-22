@@ -90,7 +90,7 @@ export default class Blog extends Component {
             {(() => {
               if (this.state.uid) {
                 return (
-                  <Grid item>
+                  <Grid item xs={12}>
                     <Link route='blogEdit' params={{ id: 'new' }}>
                       <Button color='secondary' variant='outlined'>
                         新しく書く
