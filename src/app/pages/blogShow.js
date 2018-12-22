@@ -106,13 +106,6 @@ class BlogShow extends Component {
               <div>
                 <Header text='KawazST Blog' />
                 <Grid container spacing={16}>
-                  <Grid item>
-                    <Link route='/blogs'>
-                      <Button variant='outlined'>
-                        一覧に戻る
-            </Button>
-                    </Link>
-                  </Grid>
                   {(() => {
                     if (this.state.viewerUid === this.state.author) {
                       return (
