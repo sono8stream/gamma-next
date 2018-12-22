@@ -23,7 +23,7 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
         </Head>
-        <body>
+        <body style={{ padding: '1%' }}>
           <Main />
           <NextScript />
         </body>
