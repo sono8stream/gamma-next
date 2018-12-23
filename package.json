@@ -33,7 +33,7 @@
     "react-dom": "^16.6.3",
     "react-jss": "^8.6.1",
     "remark": "^10.0.1",
-    "remark-react": "^4.0.3",
+    "remark-html": "^9.0.0",
     "styled-jsx": "^3.1.2"
   },
   "devDependencies": {
