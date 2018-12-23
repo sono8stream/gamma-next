@@ -24,50 +24,23 @@ class BlogShow extends Component {
   constructor(props) {
     super(props);
 
-    console.log("constructor");
+    if (!props.val) {
+      this.returnIndex();
+      return;
+    }
+
     this.state = {
-      author: '',
       authorName: '',
-      date: '',
-      title: '',
       categories: ['未分類'],
-      text: '',
-      error: '',
       viewerUid: undefined,
     };
-  }
 
-  componentDidMount() {
-    let ref = blogRef.child(this.props.router.query.id);
-    ref.on('value', snapshot => {
-      let val = snapshot.val();
-      if (!val) {
-        this.returnIndex();
-        return;
+    let authorNameRef = firebaseDB.ref(`accounts/${props.val.author}`);
+    authorNameRef.once('value', account => {
+      let accountVal = account.val();
+      if (accountVal) {
+        this.setState({ authorName: accountVal.name });
       }
-
-      let categories = this.state.categories;
-      if (val.categories) {
-        Object.keys(val.categories).forEach(key => {
-          categories.push(key);
-        });
-      }
-      this.setState({
-        author: val.author,
-        date: val.date,
-        title: val.title,
-        categories: categories,
-        text: val.text,
-      });
-
-      let authorNameRef = firebaseDB.ref(`accounts/${val.author}`);
-      authorNameRef.once('value', account => {
-        let accountVal = account.val();
-        if (accountVal) {
-          this.setState({ authorName: accountVal.name });
-        }
-      })
-
     });
 
     firebaseAuth().onAuthStateChanged(user => {
@@ -82,15 +55,16 @@ class BlogShow extends Component {
   }
 
   render() {
+    let data = this.props.val;
 
     return (
       <div>
         {(() => {
-          if (this.props.val) {
+          if (data) {
             return (
               <Head>
-                <meta property="og:title" content={this.props.val.title} />
-                <meta property="og:description" content={this.props.val.preview} />
+                <meta property="og:title" content={data.title} />
+                <meta property="og:description" content={data.preview} />
                 <meta property="og:type" content='article' />
                 <meta property="og:site_name" content='KawazST Blog' />
               </Head>
@@ -98,7 +72,7 @@ class BlogShow extends Component {
           }
         })()}
         {(() => {
-          if (!this.state.title) {
+          if (!data.title) {
             return <Header text="KawazST Blog" onLoad />;
           }
           else {
@@ -107,7 +81,7 @@ class BlogShow extends Component {
                 <Header text='KawazST Blog' />
                 <Grid container spacing={16}>
                   {(() => {
-                    if (this.state.viewerUid === this.state.author) {
+                    if (this.state.viewerUid === data.author) {
                       return (
                         <Grid item>
                           <Link route='blogEdit'
@@ -124,10 +98,10 @@ class BlogShow extends Component {
                     <Card>
                       <CardContent>
                         <Typography variant='h6' gutterBottom>
-                          {this.state.title}
+                          {data.title}
                         </Typography>
                         <Typography variant='subtitle2' gutterBottom>
-                          {`${this.state.date}   by ${this.state.authorName}`}
+                          {`${data.date}   by ${this.state.authorName}`}
                         </Typography>
                         {this.state.categories.map((category) => (
                           <Chip
@@ -142,7 +116,7 @@ class BlogShow extends Component {
                         <Typography variant='body2' >
                           <div
                             dangerouslySetInnerHTML={
-                              { __html: processor.processSync(this.state.text).contents }
+                              { __html: processor.processSync(data.text).contents }
                             } /> 
                         </Typography>
                       </CardContent>
