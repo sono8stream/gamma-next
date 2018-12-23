@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import { firebaseAuth, firebaseDB} from '../firebase';
 import remark from 'remark';
-import reactRenderer from 'remark-react';
+import htmlConverter from 'remark-html';
 import { withRouter } from 'next/router';
 import { Link,Router } from '../../functions/routes';
 
@@ -24,7 +24,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const blogRef = firebaseDB.ref('blogs');
-const processor = remark().use(reactRenderer);
+const processor = remark().use(htmlConverter, { sanitize: false });
 const previewChars = 25;
 
 class BlogEdit extends Component {
@@ -297,7 +297,10 @@ class BlogEdit extends Component {
               {this.state.title}
             </DialogTitle>
             <DialogContentText>
-              {processor.processSync(this.state.text).contents}
+              <div
+                dangerouslySetInnerHTML={
+                  { __html: processor.processSync(this.state.text).contents }
+                } />              
             </DialogContentText>
           </DialogContent>
           <DialogActions>

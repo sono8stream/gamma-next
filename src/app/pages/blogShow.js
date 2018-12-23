@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import {firebaseAuth, firebaseDB} from '../firebase';
 import remark from 'remark';
-import reactRenderer from 'remark-react';
+import htmlConverter from 'remark-html';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { Link,Router } from '../../functions/routes';
@@ -18,7 +18,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const blogRef = firebaseDB.ref('blogs');
-const processor=remark().use(reactRenderer);
+const processor = remark().use(htmlConverter, { sanitize: false });
 
 class BlogShow extends Component {
   constructor(props) {
@@ -139,8 +139,11 @@ class BlogShow extends Component {
                         <br />
                         <br />
                         <Divider light />
-                        <Typography variant='body2'>
-                          {processor.processSync(this.state.text).contents}
+                        <Typography variant='body2' >
+                          <div
+                            dangerouslySetInnerHTML={
+                              { __html: processor.processSync(this.state.text).contents }
+                            } /> 
                         </Typography>
                       </CardContent>
                     </Card>
