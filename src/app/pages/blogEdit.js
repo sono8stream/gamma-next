@@ -3,7 +3,7 @@ import { firebaseAuth, firebaseDB} from '../firebase';
 import remark from 'remark';
 import htmlConverter from 'remark-html';
 import { withRouter } from 'next/router';
-import { Link,Router } from '../../functions/routes';
+import { Router,href } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -196,11 +196,10 @@ class BlogEdit extends Component {
         <Header text='KawazST Blog' />
         <Grid container spacing={16}>
           <Grid item>
-            <Link route='blogShow' params={{ id: this.props.router.query.id }}>
-            <Button color='primary' variant='outlined'>
-              編集をキャンセル
+              <Button color='primary' variant='outlined'
+                href={href('blogShow', { id: this.props.router.query.id })}>
+                {'編集をキャンセル'}
             </Button>
-            </Link>
           </Grid>
           {(() => {
             if (!this.state.onCreate) {
@@ -225,8 +224,9 @@ class BlogEdit extends Component {
                       onChange={e => this.onAccessibilityChange(e)}
                       label='公開設定'
                       variant='outlined'>
-                      {this.accessibility.map((option) => (
+                      {this.accessibility.map((option,i) => (
                         <MenuItem
+                          key={i}
                           value={option}
                           selected={option === this.state.accessibility}>
                           {option}
@@ -297,7 +297,7 @@ class BlogEdit extends Component {
               {this.state.title}
             </DialogTitle>
             <DialogContentText>
-              <div
+              <span
                 dangerouslySetInnerHTML={
                   { __html: processor.processSync(this.state.text).contents }
                 } />              
