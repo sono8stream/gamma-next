@@ -163,7 +163,7 @@ class BlogEdit extends Component {
 
   getToday() {
     let today = new Date();
-    let month = ('00' + today.getMonth()).slice(-2);
+    let month = ('00' + today.getMonth()).slice(-2)+1;
     let day = ('00' + today.getDate()).slice(-2);
     let text = `${today.getFullYear()}/${month}/${day}`;
     return text;
