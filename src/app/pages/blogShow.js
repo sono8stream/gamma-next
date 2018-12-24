@@ -4,7 +4,7 @@ import remark from 'remark';
 import htmlConverter from 'remark-html';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
-import { Link,Router } from '../../functions/routes';
+import { Router,href } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -56,6 +56,7 @@ class BlogShow extends Component {
 
   render() {
     let data = this.props.val;
+    if (!data) return null;
 
     return (
       <div>
@@ -84,12 +85,10 @@ class BlogShow extends Component {
                     if (this.state.viewerUid === data.author) {
                       return (
                         <Grid item>
-                          <Link route='blogEdit'
-                            params={{ id: this.props.router.query.id }}>
-                            <Button variant='outlined' color='primary'>
-                              編集する
-            </Button>
-                          </Link>
+                          <Button variant='outlined' color='primary'
+                            href={href('blogEdit', { id: this.props.router.query.id })}>
+                            {'編集する'}
+                          </Button>
                         </Grid>
                       );
                     }
@@ -103,8 +102,9 @@ class BlogShow extends Component {
                         <Typography variant='subtitle2' gutterBottom>
                           {`${data.date}   by ${this.state.authorName}`}
                         </Typography>
-                        {this.state.categories.map((category) => (
+                        {this.state.categories.map((category, i) => (
                           <Chip
+                            key={i}
                             label={category}
                             clickable
                             variant='outlined'
@@ -113,21 +113,19 @@ class BlogShow extends Component {
                         <br />
                         <br />
                         <Divider light />
-                        <Typography variant='body2' >
-                          <div
+                        <Typography variant='body2'>
+                          <span
                             dangerouslySetInnerHTML={
                               { __html: processor.processSync(data.text).contents }
-                            } /> 
+                            } />
                         </Typography>
                       </CardContent>
                     </Card>
                   </Grid>
                   <Grid item xs={6}>
-                    <Link route='/blogs'>
-                      <Button variant='outlined'>
-                        一覧に戻る
-            </Button>
-                    </Link>
+                    <Button variant='outlined' href={href('blogs')}>
+                      {'一覧に戻る'}
+                    </Button>
                   </Grid>
                 </Grid>
                 <Footer />
