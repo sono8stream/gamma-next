@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { firebaseAuth, firebaseDB } from '../firebase';
-import { Link } from '../../functions/routes';
+import { Link,href } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -26,7 +26,6 @@ export default class Blog extends Component {
       loadCompleted: false,
       uid: undefined,
     };
-    //document.body.className = "body";
   }
 
   componentWillMount() {
@@ -52,8 +51,8 @@ export default class Blog extends Component {
           preview: val.preview,
           title: title,
         });
-        newArticles.sort((a, b)=> {
-          if (a.date+a.time > b.date+b.time) {
+        newArticles.sort((a, b) => {
+          if (a.date + a.time > b.date + b.time) {
             return -1;
           }
           if (a.date + a.time < b.date + b.time) {
@@ -78,7 +77,7 @@ export default class Blog extends Component {
   render() {
     if (!this.state.loadCompleted) {
       return (
-          <Header text="KawazST Blog" onLoad />
+        <Header text="KawazST Blog" onLoad />
       );
     }
     else {
@@ -92,7 +91,8 @@ export default class Blog extends Component {
                 return (
                   <Grid item xs={12}>
                     <Link route='blogEdit' params={{ id: 'new' }}>
-                      <Button color='secondary' variant='outlined'>
+                      <Button color='secondary' variant='outlined'
+                        href={href('blogEdit', { id: 'new' })}>
                         新しく書く
                     </Button>
                     </Link>
@@ -107,23 +107,23 @@ export default class Blog extends Component {
                 return (
                   <Grid item xs={12} key={i}>
                     <Card>
-                      <Link route='blogShow' params={{ id: a.id }}>
                       <CardActionArea>
-                        <CardContent>
-                          <Typography color="textSecondary" gutterBottom>
-                            {`${a.date}   by ${a.authorName}`}
-                          </Typography>
-                          <Typography variant="h6">
-                            {a.title}
-                          </Typography>
-                          <Divider light />
-                          <br />
-                          <Typography variant="body1">
-                            {a.preview}
-                          </Typography>
-                        </CardContent>
-                        </CardActionArea>
+                        <Link route='blogShow' params={{ id: a.id }}>
+                          <CardContent>
+                            <Typography color="textSecondary" gutterBottom>
+                              {`${a.date}   by ${a.authorName}`}
+                            </Typography>
+                            <Typography variant="h6">
+                              {a.title}
+                            </Typography>
+                            <Divider light />
+                            <br />
+                            <Typography variant="body1">
+                              {a.preview}
+                            </Typography>
+                          </CardContent>
                         </Link>
+                      </CardActionArea>
                     </Card>
                   </Grid>
                 );
