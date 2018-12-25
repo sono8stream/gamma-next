@@ -1,4 +1,4 @@
-﻿import React, { Component } from 'react';
+﻿import React, { Component, Children } from 'react';
 import { firebaseAuth, firebaseDB } from '../firebase';
 import { Link,href } from '../../functions/routes';
 
@@ -90,10 +90,12 @@ export default class Blog extends Component {
               return (
                 <Grid container spacing={16} justify="flex-start">
                   <Grid item xs={12}>
+                    <Link route='blogEdit' params={{id:'new'}}>
                     <Button color='secondary' variant='outlined'
                       href={href('blogEdit', { id: 'new' })}>
                       {'新しく書く'}
-                    </Button>
+                      </Button>
+                      </Link>
                   </Grid>
                 </Grid>
               );
@@ -113,7 +115,7 @@ export default class Blog extends Component {
                       style={{
                         width: '100%',
                         height: '100%',
-                      }} >
+                      }}>
                       <Card
                         style={{
                           width: '100%',
@@ -123,7 +125,7 @@ export default class Blog extends Component {
                           backgroundColor: colors.primaryDark,
                         }}>
                           <Typography gutterBottom
-                            style={{ color: 'white' ,height:2}}                          >
+                            style={{ color: 'white', height: 2 }}                          >
                             {`${a.date}   by ${a.authorName}`}
                           </Typography>
                         </CardContent>
@@ -133,7 +135,7 @@ export default class Blog extends Component {
                           <Typography variant='h5' align='center'
                             style={{
                               color: 'white',
-                              fontSize: '120%',
+                              fontSize: i == 0 ? '150%' : '100%',
                             }}>
                             {a.title}
                           </Typography>
@@ -141,7 +143,7 @@ export default class Blog extends Component {
                         <CardMedia
                           image='https://gamma-creators.firebaseapp.com/icon.png'
                           style={{ height: 0, paddingTop: '56.25%' }} />
-                        <Divider light/>
+                        <Divider light />
                         <CardContent>
                           <Typography variant="body1" align='center'>
                             {a.preview}
@@ -149,7 +151,7 @@ export default class Blog extends Component {
                         </CardContent>
                       </Card>
                     </ButtonBase>
-                  </Grid>
+                    </Grid>
                 );
               }
             }
