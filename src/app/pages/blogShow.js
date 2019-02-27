@@ -4,7 +4,7 @@ import remark from 'remark';
 import htmlConverter from 'remark-html';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
-import { Router,href } from '../../functions/routes';
+import { Router } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -16,26 +16,30 @@ import Divider from '@material-ui/core/Divider';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import LinkButton from '../components/LinkButton';
 
 const blogRef = firebaseDB.ref('blogs');
-const processor = remark().use(htmlConverter, { sanitize: false });
 
 class BlogShow extends Component {
   constructor(props) {
     super(props);
-
-    if (!props.val) {
-      this.returnIndex();
-      return;
-    }
-
+    
     this.state = {
       authorName: '',
       categories: ['未分類'],
       viewerUid: undefined,
     };
+  }
 
-    let authorNameRef = firebaseDB.ref(`accounts/${props.val.author}`);
+  componentDidMount() {
+    console.log(this.props.val);
+
+    if (!this.props.val) {
+      this.returnIndex();
+      return;
+    }
+
+    let authorNameRef = firebaseDB.ref(`accounts/${this.props.val.author}`);
     authorNameRef.once('value', account => {
       let accountVal = account.val();
       if (accountVal) {
@@ -56,7 +60,7 @@ class BlogShow extends Component {
 
   render() {
     let data = this.props.val;
-    if (!data) return null;
+    let textProcessor = remark().use(htmlConverter, { sanitize: false });
 
     return (
       <div>
@@ -73,7 +77,7 @@ class BlogShow extends Component {
           }
         })()}
         {(() => {
-          if (!data.title) {
+          if (!(data&& this.state)) {
             return <Header text="KawazST Blog" onLoad />;
           }
           else {
@@ -85,10 +89,10 @@ class BlogShow extends Component {
                     if (this.state.viewerUid === data.author) {
                       return (
                         <Grid item>
-                          <Button variant='outlined' color='primary'
-                            href={href('blogEdit', { id: this.props.router.query.id })}>
+                          <LinkButton route='blogEdit' params={{ id: this.props.router.query.id }}
+                            variant='outlined' color='primary'>
                             {'編集する'}
-                          </Button>
+                          </LinkButton>
                         </Grid>
                       );
                     }
@@ -114,18 +118,20 @@ class BlogShow extends Component {
                         <br />
                         <Divider light />
                         <Typography variant='body2'>
-                          <span
+                          <div
                             dangerouslySetInnerHTML={
-                              { __html: processor.processSync(data.text).contents }
+                              { __html: textProcessor.processSync(data.text).contents }
                             } />
                         </Typography>
+                        <Divider/>
                       </CardContent>
                     </Card>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Button variant='outlined' href={href('blogs')}>
+                  <Grid item>
+                    <LinkButton route='blogs'
+                      variant='outlined' color='primary'>
                       {'一覧に戻る'}
-                    </Button>
+                    </LinkButton>
                   </Grid>
                 </Grid>
                 <Footer />
@@ -140,7 +146,7 @@ class BlogShow extends Component {
 
 BlogShow.getInitialProps = async ({ query }) => {
   let snapshot = await blogRef.child(query.id).once('value');
-  return { val: snapshot.val() }
+  return { val: snapshot.val() };
 }
 
 export default withRouter(BlogShow);

@@ -1,9 +1,9 @@
 ﻿import React, { Component } from 'react';
-import { firebaseAuth, firebaseDB} from '../firebase';
+import { firebaseAuth, firebaseDB, firebaseStorage } from '../firebase';
 import remark from 'remark';
 import htmlConverter from 'remark-html';
 import { withRouter } from 'next/router';
-import { Router,href } from '../../functions/routes';
+import { Router } from '../../functions/routes';
 
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -22,9 +22,10 @@ import Divider from '@material-ui/core/Divider';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import LinkButton from '../components/LinkButton';
 
 const blogRef = firebaseDB.ref('blogs');
-const processor = remark().use(htmlConverter, { sanitize: false });
+
 const previewChars = 25;
 
 class BlogEdit extends Component {
@@ -49,6 +50,8 @@ class BlogEdit extends Component {
       preview: '',
       error: '',
       onPreview: false,
+      sumbnailFile: undefined,
+      sumbnailName:''
     }
 
     this.ref = blogRef.child(this.props.router.query.id);
@@ -125,6 +128,16 @@ class BlogEdit extends Component {
     this.setState({ onPreview: !this.state.onPreview });
   }
 
+  onSumbnailChange(e) {
+    let imageFile = e.target.files[0];
+    if (!imageFile) return;
+
+    this.setState({
+      sumbnailName: e.target.files[0].name,
+      sumbnailFile: e.target.files[0],
+    });
+  }
+
   onSave() {
     let error = this.getValidationError();
     if (error) {
@@ -155,15 +168,35 @@ class BlogEdit extends Component {
           this.setState({ error: '保存に失敗しました' });
         }
         else {
-          Router.pushRoute('/blogs');
+
+          if (this.state.sumbnailFile) {
+            let storageRef = firebaseStorage().ref('blogs');
+            let sumbnailRef = storageRef.child(
+              `${this.ref.key}/sumbnail`);
+            sumbnailRef.put(this.state.sumbnailFile,
+              { contentType: 'image/png' }).then(snapshot => {
+              sumbnailRef.getDownloadURL().then(url => {
+                this.ref.update({ sumbnailUrl: url }, e => {
+                  if (e) {
+                    this.setState({ error: '保存に失敗しました' });
+                  }
+                  else {
+                    Router.pushRoute('/blogs');
+                  }
+                });
+              });
+            });
+          } else {
+            Router.pushRoute('/blogs');
+          }
         }
-      });
+        });
     }
   }
 
   getToday() {
     let today = new Date();
-    let month = ('00' + today.getMonth()).slice(-2)+1;
+    let month = ('00' + (today.getMonth() + 1)).slice(-2);
     let day = ('00' + today.getDate()).slice(-2);
     let text = `${today.getFullYear()}/${month}/${day}`;
     return text;
@@ -191,15 +224,18 @@ class BlogEdit extends Component {
       return <Header text='KawazST Blog' onLoad />
     }
 
+    let textProcessor = remark().use(htmlConverter, { sanitize: false });
+
     return (
       <div>
         <Header text='KawazST Blog' />
         <Grid container spacing={16}>
           <Grid item>
-              <Button color='primary' variant='outlined'
-                href={href('blogShow', { id: this.props.router.query.id })}>
-                {'編集をキャンセル'}
-            </Button>
+            <LinkButton route='blogShow'
+              params={{ id: this.props.router.query.id }}
+              color='primary' variant='outlined'>
+              {'編集をキャンセル'}
+            </LinkButton>
           </Grid>
           {(() => {
             if (!this.state.onCreate) {
@@ -224,7 +260,7 @@ class BlogEdit extends Component {
                       onChange={e => this.onAccessibilityChange(e)}
                       label='公開設定'
                       variant='outlined'>
-                      {this.accessibility.map((option,i) => (
+                      {this.accessibility.map((option, i) => (
                         <MenuItem
                           key={i}
                           value={option}
@@ -258,8 +294,14 @@ class BlogEdit extends Component {
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <Button color='primary' variant='outlined'
+                      onClick={() => this.switchPreview()} >
+                      {'本文プレビュー'}
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12}>
                     <TextField
-                      label="紹介文(20文字まで)"
+                      label="紹介文(25文字まで)"
                       helperText="未入力の場合、本文の一部が適用されます"
                       fullWidth
                       value={this.state.preview}
@@ -268,11 +310,23 @@ class BlogEdit extends Component {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <Button color='primary' variant='outlined'
-                      onClick={() => this.switchPreview()} >
-                      プレビューを見る
-              </Button>
+                  <Grid item xs={12}
+                    container alignItems="baseline" spacing={16}>
+                    <TextField
+                      label="サムネイル(16:9推奨)"
+                      helperText="未入力の場合、デフォルトが適用されます"
+                      value={this.state.sumbnailName}
+                      onChange={e => this.onTextChange(e)}
+                      margin="normal"
+                      variant="outlined"
+                    />
+                    <input type="file" style={{ display: "none" }}
+                      onChange={e => this.onSumbnailChange(e)}
+                      ref="sumbnailInput" />
+                    <Button color="primary" variant="outlined"
+                      onClick={() => this.refs.sumbnailInput.click()} >
+                      {"アップロード"}
+                    </Button>
                   </Grid>
                   <Grid item xs={12}>
                     <Button color='secondary' variant='outlined'
@@ -290,8 +344,7 @@ class BlogEdit extends Component {
         </Grid>
         <Dialog
           open={this.state.onPreview}
-          onClose={() => this.switchPreview()}
-        >
+          onClose={() => this.switchPreview()} >
           <DialogContent>
             <DialogTitle>
               {this.state.title}
@@ -299,8 +352,8 @@ class BlogEdit extends Component {
             <DialogContentText>
               <span
                 dangerouslySetInnerHTML={
-                  { __html: processor.processSync(this.state.text).contents }
-                } />              
+                  { __html: textProcessor.processSync(this.state.text).contents }
+                } />
             </DialogContentText>
           </DialogContent>
           <DialogActions>

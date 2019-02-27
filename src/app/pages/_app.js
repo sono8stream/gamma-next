@@ -26,6 +26,8 @@ class MyApp extends App {
       <Container>
         <Head>
           <title>KawazST Blog</title>
+          <meta name="google-site-verification"
+            content="IrtX_g1Cq9bjX7SGHwKXigBqxY6boseYErZw67yNqY4" />
           <meta name="twitter:card" content="summary" />
           <meta name="twitter:site" content="@kawaz_student" />
           <meta property="og:site_name" content='KawazST Blog' />

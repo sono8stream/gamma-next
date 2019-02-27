@@ -1,6 +1,5 @@
-﻿import React, { Component, Children } from 'react';
-import { firebaseAuth, firebaseDB } from '../firebase';
-import { Link,href } from '../../functions/routes';
+﻿import React, { Component } from 'react';
+import { firebaseAuth, firebaseDB} from '../firebase';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -9,10 +8,12 @@ import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
+import ButtonBase from '@material-ui/core/ButtonBase';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ButtonBase } from '@material-ui/core';
+import LinkButton from '../components/LinkButton';
+import LinkButtonBase from '../components/LinkButtonBase';
 
 import colors from '../style/themeColor';
 import { relative } from 'path';
@@ -51,6 +52,8 @@ export default class Blog extends Component {
           authorName: name,
           preview: val.preview,
           title: title,
+          sumbnailUrl: val.sumbnailUrl
+            || 'https://gamma-creators.firebaseapp.com/icon16-9.png',
         });
         newArticles.sort((a, b) => {
           if (a.date + a.time > b.date + b.time) {
@@ -82,6 +85,8 @@ export default class Blog extends Component {
       );
     }
     else {
+      let isFirst = true;
+
       return (
         <div>
           <Header text="KawazST Blog" />
@@ -90,12 +95,10 @@ export default class Blog extends Component {
               return (
                 <Grid container spacing={16} justify="flex-start">
                   <Grid item xs={12}>
-                    <Link route='blogEdit' params={{id:'new'}}>
-                    <Button color='secondary' variant='outlined'
-                      href={href('blogEdit', { id: 'new' })}>
+                    <LinkButton route='blogEdit' params={{ id: 'new' }}
+                      color='secondary' variant='outlined'>
                       {'新しく書く'}
-                      </Button>
-                      </Link>
+                    </LinkButton>
                   </Grid>
                 </Grid>
               );
@@ -108,11 +111,14 @@ export default class Blog extends Component {
               if (a.accessibility === '公開'
                 || (a.accessibility === '限定公開' && this.state.uid)
                 || this.state.uid === a.author) {
+                let first = isFirst;
+                if (isFirst) isFirst = false;
+
                 return (
                   <Grid item key={i}
-                    xs={12} sm={i == 0 ? 12 : 6} md={i == 0 ? 12 : 4}>
-                    <ButtonBase key={i} href={href('blogShow', { id: a.id })}
-                      style={{
+                    xs={12} sm={first ? 12 : 6} md={first ? 12 : 4}>
+                    <LinkButtonBase route='blogShow' params={{ id: a.id }}
+                      key={i} style={{
                         width: '100%',
                         height: '100%',
                       }}>
@@ -125,7 +131,8 @@ export default class Blog extends Component {
                           backgroundColor: colors.primaryDark,
                         }}>
                           <Typography gutterBottom
-                            style={{ color: 'white', height: 2 }}                          >
+                            style={{ color: 'white', height: 2 }}
+                          >
                             {`${a.date}   by ${a.authorName}`}
                           </Typography>
                         </CardContent>
@@ -135,13 +142,13 @@ export default class Blog extends Component {
                           <Typography variant='h5' align='center'
                             style={{
                               color: 'white',
-                              fontSize: i == 0 ? '150%' : '100%',
+                              fontSize: first ? '150%' : '100%',
                             }}>
                             {a.title}
                           </Typography>
                         </CardContent>
                         <CardMedia
-                          image='https://gamma-creators.firebaseapp.com/icon.png'
+                          image={a.sumbnailUrl}
                           style={{ height: 0, paddingTop: '56.25%' }} />
                         <Divider light />
                         <CardContent>
@@ -150,8 +157,8 @@ export default class Blog extends Component {
                           </Typography>
                         </CardContent>
                       </Card>
-                    </ButtonBase>
-                    </Grid>
+                    </LinkButtonBase>
+                  </Grid>
                 );
               }
             }
