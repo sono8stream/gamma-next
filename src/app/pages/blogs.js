@@ -9,6 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import { Link } from '../../functions/routes';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -17,6 +18,7 @@ import LinkButtonBase from '../components/LinkButtonBase';
 
 import colors from '../style/themeColor';
 import { relative } from 'path';
+import { CardActionArea } from '@material-ui/core';
 
 const blogRef = firebaseDB.ref('blogs');
 
@@ -86,6 +88,7 @@ export default class Blog extends Component {
     }
     else {
       let isFirst = true;
+      let props = this.props;
 
       return (
         <div>
@@ -113,10 +116,46 @@ export default class Blog extends Component {
                 || this.state.uid === a.author) {
                 let first = isFirst;
                 if (isFirst) isFirst = false;
+                let link = <Link route='blogShow'
+                  params={{ id: a.id }} >aaa</Link>;
+                return link;
 
-                return (
+            return (
                   <Grid item key={i}
                     xs={12} sm={first ? 12 : 6} md={first ? 12 : 4}>
+                    <Card>
+                      <CardActionArea component={link}>
+                        <CardContent style={{
+                          backgroundColor: colors.primaryDark,
+                        }}>
+                          <Typography gutterBottom
+                            style={{ color: 'white', height: 2 }}
+                          >
+                            {`${a.date}   by ${a.authorName}`}
+                          </Typography>
+                        </CardContent>
+                        <CardContent style={{
+                          backgroundColor: colors.primary
+                        }}>
+                          <Typography variant='h5' align='center'
+                            style={{
+                              color: 'white',
+                              fontSize: first ? '150%' : '100%',
+                            }}>
+                            {a.title}
+                          </Typography>
+                        </CardContent>
+                        <CardMedia
+                          image={a.sumbnailUrl}
+                          style={{ height: 0, paddingTop: '56.25%' }} />
+                        <Divider light />
+                        <CardContent>
+                          <Typography variant="body1" align='center'>
+                            {a.preview}
+                          </Typography>
+                        </CardContent>
+                      </CardActionArea>
+                    </Card>
                     <LinkButtonBase route='blogShow' params={{ id: a.id }}
                       key={i} style={{
                         width: '100%',
