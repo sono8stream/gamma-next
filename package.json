@@ -26,6 +26,7 @@
     "firebase-functions": "^2.1.0",
     "firebase-tools": "^6.1.0",
     "jss": "^9.8.7",
+    "markdown-to-jsx": "^6.9.3",
     "next": "^7.0.2",
     "next-routes": "^1.4.2",
     "prop-types": "^15.6.2",

@@ -23,6 +23,7 @@ import Divider from '@material-ui/core/Divider';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import LinkButton from '../components/LinkButton';
+import Markdown from '../components/Markdown';
 
 const blogRef = firebaseDB.ref('blogs');
 
@@ -350,6 +351,7 @@ class BlogEdit extends Component {
               {this.state.title}
             </DialogTitle>
             <DialogContentText>
+              <Markdown>{this.state.text}</Markdown>
               <span
                 dangerouslySetInnerHTML={
                   { __html: textProcessor.processSync(this.state.text).contents }

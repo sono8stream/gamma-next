@@ -1,7 +1,5 @@
 ﻿import React, { Component } from 'react';
 import {firebaseAuth, firebaseDB} from '../firebase';
-import remark from 'remark';
-import htmlConverter from 'remark-html';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import { Router } from '../../functions/routes';
@@ -17,6 +15,7 @@ import Divider from '@material-ui/core/Divider';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import LinkButton from '../components/LinkButton';
+import Markdown from '../components/Markdown';
 
 const blogRef = firebaseDB.ref('blogs');
 
@@ -60,7 +59,6 @@ class BlogShow extends Component {
 
   render() {
     let data = this.props.val;
-    let textProcessor = remark().use(htmlConverter, { sanitize: false });
 
     return (
       <div>
@@ -117,12 +115,7 @@ class BlogShow extends Component {
                         <br />
                         <br />
                         <Divider light />
-                        <Typography variant='body2'>
-                          <div
-                            dangerouslySetInnerHTML={
-                              { __html: textProcessor.processSync(data.text).contents }
-                            } />
-                        </Typography>
+                        <Markdown>{data.text}</Markdown>
                         <Divider/>
                       </CardContent>
                     </Card>
